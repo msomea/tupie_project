@@ -75,8 +75,12 @@ WSGI_APPLICATION = 'tupie_project.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'locations',
+        'USER': 'postgres',
+        'PASSWORD': 'msomea',
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
