@@ -18,10 +18,37 @@
 
                 <form method="post">
                         {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit">Sign Up</button>
+                        <div class="form-group">
+                            <label>Title:</label>
+                            {{ form.tittle }}
+                        </div>
+                        <div class="form-group">
+                            <label>Description:</label>
+                            {{ form.description }}
+                        </div>
+                        <div class="form-group">
+                            <label>Region:</label>
+                            {{ form.region }}
+                        </div>
+                        <div class="form-group">
+                            <label>District:</label>
+                            {{ form.district }}
+                        </div>
+                        <div class="form-group">
+                            <label>Ward:</label>
+                            {{ form.ward }}
+                        </div>
+                        <div class="form-group">
+                            <label>Place:</label>
+                            {{ form.place }}
+                        </div>
+                        <div class="form-group">
+                            <label>Street:</label>
+                            {{ form.street }}
+                        </div>
+                        <button type="submit">List</button>
                 </form>
-                <p>Already have an account? <a href="{% url 'tupie_app:login' %}">Log In</a></p>
+                <p><a href="{% url 'tupie_app:home' %}">Back to home</a></p>
             </div>
 
     </body>
