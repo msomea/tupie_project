@@ -1,18 +1,23 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
     <head>
         <tittle>Tupie</tittle>
+        <link rel="stylesheet" href="{% static 'tupie_app/style.css' %}">
     </head>
     <body>
-        <h1>Welcome to Tupie home page</h1>
-        
-        {% comment %}
-        {% if user.is_authenticated %}
-            <p> Hello, {{user.name}}! <a href="{% url 'tupie_app:logout' %}">Log Out</a></p>
-        {% else %}
-            <p><a href="{% url 'tupie_app:login' %}">Log In</a> | <a href="{% url 'tupie_app:signup' %}">Sign Up</a> </p>
-        {% endif %}
-        {% endcomment %}
+            <div class header>
+                <h1>Welcome to Tupie home page</h1>
+            </div>
+
+            <div class content>
+                {% if user.is_authenticated %}
+                    <p> Hello, {{user.name}}! <a href="{% url 'tupie_app:logout' %}">Log Out</a></p>
+                    <p><a href="{% url 'tupie_app: add_item' %}">Add Item</a></p>
+                {% else %}
+                    <p><a href="{% url 'tupie_app:login' %}">Log In</a> | <a href="{% url 'tupie_app:signup' %}">Sign Up</a> </p>
+                {% endif %}
+            </div>
 
     </body>
 </html>

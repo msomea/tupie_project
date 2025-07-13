@@ -1,9 +1,34 @@
+{% load static %}
 <!DOCTYPE html>
 <html>
     <head>
-        <tittle>Tupie</tittle>
+        <tittle>Log in - Tupie</tittle>
+        <link rel="stylesheet" href="{% static 'tupie_app/style.css' %}">
     </head>
     <body>
-        <h1>Welcome to Tupie Log In</h1>
+            <div class header>
+                <h1>Log In on Tupie</h1>
+            </div>
+
+            <div class content>
+                {% for message i messages %}
+                    <p class="message">{{ message }}</p>
+                {% endfor %}
+
+                <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <label>Username:</label>
+                            <input type="text" name="Username">
+                        </div>
+                        <div class="form-group">
+                            <label>Password:</label>
+                            <input type="password" name="Password">
+                        </div>
+                        <button type="submit">Log In</button>
+                </form>
+                <p>Need an account? <a href="{% url 'tupie_app:signup' %}">Sign Up</a></p>
+            </div>
+
     </body>
 </html>
