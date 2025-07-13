@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from .models import Region, District, Ward, Place, Street, Item
-from .forms import ItemForm, UserCreationForm
+from .forms import ItemForm
 
 def home(request):
     return render(request, 'tupie_app/home.html')

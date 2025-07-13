@@ -4,11 +4,14 @@ from django.db import models
 class Country(models.Model):
     id = models.AutoField(primary_key=True)
     iso = models.CharField(max_length=2, null=False)
-    name = models.TextField(null=False)
-    nicename = models.TextField(null=False)
+    name = models.TextField(max_length=100, null=False)
+    nicename = models.TextField(max_length=100, null=False)
     iso3 = models.CharField(max_length=3, null=True)
     numcode = models.IntegerField(null=True)
     phonecode = models.IntegerField(null=False)
+
+    class Meta:
+        db_table = 'countries'
 
     def __str__(self):
         return self.name
@@ -16,8 +19,10 @@ class Country(models.Model):
 class Region(models.Model):
     region_name = models.TextField(max_length=100, unique=True)
     region_code = models.IntegerField(primary_key=True)
-    general_locations = models.ForeignKey('General', on_delete=models.CASCADE)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True)
+    country_id = models.ForeignKey(Country, on_delete=models.CASCADE, db_column='country_id', null=True)
+
+    class Meta:
+        db_table = 'regions'
 
     def __str__(self):
         return self.region_name
@@ -25,21 +30,24 @@ class Region(models.Model):
 class District(models.Model):
     district_name = models.TextField(max_length=100)
     district_code = models.IntegerField(primary_key=True)
-    general_location = models.ForeignKey('General', on_delete=models.CASCADE, null=True)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE, to_field='region_code', null=True)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True)
+    region_id = models.ForeignKey(Region, on_delete=models.CASCADE, db_column='region_id', to_field='region_code', null=True)
+    country_id = models.ForeignKey(Country, on_delete=models.CASCADE, db_column='country_id', null=True)
+
+    class Meta:
+        db_table = 'districts'
 
     def __str__(self):
-        #return f"{self.district_name} ({self.region.name})"
         return self.district_name
     
 class Ward(models.Model):
     ward_name = models.TextField(max_length=100)
     ward_code = models.IntegerField(primary_key=True)
-    district = models.ForeignKey(District, on_delete=models.CASCADE, to_field='district_code', null=True)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE, to_field='region_code', null=True)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True)
-    general_locations = models.ForeignObject('General', on_delete=models.CASCADE, null=True)
+    district_id = models.ForeignKey(District, on_delete=models.CASCADE, db_column='district_id', to_field='district_code', null=True)
+    region_id = models.ForeignKey(Region, on_delete=models.CASCADE, db_column='region_id', to_field='region_code', null=True)
+    country_id = models.ForeignKey(Country, on_delete=models.CASCADE,db_column='country_id', null=True)
+
+    class Meta:
+        db_table = 'wards'
 
     def __str__(self):
         return self.ward_name
@@ -47,11 +55,13 @@ class Ward(models.Model):
 class Place(models.Model):
     id = models.AutoField(primary_key=True)
     place_name = models.TextField(max_length=100)
-    ward = models.ForeignKey(Ward, on_delete=models.CASCADE, to_field='ward_code', null=True)
-    district = models.ForeignKey(District, on_delete=models.CASCADE, to_field='district_code', null=True)
-    region = models.ForeignKey(Region, on_delete=models.CASCADE, to_field='region_code', null=True)
-    country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True)
-    general_locations = models.ForeignObject('General', on_delete=models.CASCADE, null=True)
+    ward_id = models.ForeignKey(Ward, on_delete=models.CASCADE, db_column='ward_id', to_field='ward_code', null=True)
+    district_id = models.ForeignKey(District, on_delete=models.CASCADE, db_column='district_id', to_field='district_code', null=True)
+    region_id = models.ForeignKey(Region, on_delete=models.CASCADE, db_column='region_id', to_field='region_code', null=True)
+    country_id = models.ForeignKey(Country, on_delete=models.CASCADE, db_column='country_id', null=True)
+
+    class Meta:
+        db_table = 'places'
 
     def __str__(self):
         return self.place_name
@@ -59,21 +69,21 @@ class Place(models.Model):
 class General(models.Model):
     id = models.AutoField(primary_key=True)
     country = models.ForeignKey(Country, on_delete=models.CASCADE, null=True)
-    region = models.TextField(null=True)
+    region = models.TextField(max_length=100, null=True)
     regioncode = models.IntegerField(null=True)
-    district = models.TextField(null=True)
+    district = models.TextField(max_length=100, null=True)
     districtcode = models.IntegerField(null=True)
-    ward = models.TextField(null=True)
+    ward = models.TextField(max_length=100, null=True)
     wardcode = models.IntegerField(null=True)
-    street = models.TextField(null=True)
-    place = models.TextField(null=True)
+    street = models.TextField(max_length=100, null=True)
+    place = models.TextField(max_length=100, null=True)
 
     def __str__(self):
         return f"{self.region} - {self.district}"
     
 class Street(models.Model):
     name = models.TextField(max_length=100, blank=True, null=True)
-    general_location = models.ForeignKey(General, on_delete=models.CASCADE, null=True)
+    general_locations = models.ForeignKey(General, on_delete=models.CASCADE, null=True, related_name='streets')
 
     def __str__(self):
         return self.name or "No Street"
@@ -81,13 +91,12 @@ class Street(models.Model):
 
 
 class Item(models.Model):
-    tittle = models.CharField(max_length=100)
+    title = models.CharField(max_length=100)
     description = models.TextField()
     owner = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     region = models.ForeignKey(Region, on_delete=models.SET_NULL, null=True, blank=True)
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
     ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True, blank=True)
-    street = models.ForeignKey(Street, on_delete=models.SET_NULL, null=True, blank=True)
     place = models.ForeignKey(Place, on_delete=models.SET_NULL, null=True, blank=True)
     street = models.ForeignKey(Street, on_delete=models.SET_NULL, null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
