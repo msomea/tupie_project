@@ -12,6 +12,7 @@ class Country(models.Model):
 
     class Meta:
         db_table = 'countries'
+        managed = False
 
     def __str__(self):
         return self.name
@@ -23,6 +24,7 @@ class Region(models.Model):
 
     class Meta:
         db_table = 'regions'
+        managed = False
 
     def __str__(self):
         return self.region_name
@@ -35,6 +37,7 @@ class District(models.Model):
 
     class Meta:
         db_table = 'districts'
+        managed = False
 
     def __str__(self):
         return self.district_name
@@ -48,6 +51,7 @@ class Ward(models.Model):
 
     class Meta:
         db_table = 'wards'
+        managed = False
 
     def __str__(self):
         return self.ward_name
@@ -62,6 +66,7 @@ class Place(models.Model):
 
     class Meta:
         db_table = 'places'
+        managed = False
 
     def __str__(self):
         return self.place_name
@@ -77,6 +82,11 @@ class General(models.Model):
     wardcode = models.IntegerField(null=True)
     street = models.TextField(max_length=100, null=True)
     place = models.TextField(max_length=100, null=True)
+
+    class Meta:
+        db_table = 'general'
+        managed = False
+
 
     def __str__(self):
         return f"{self.region} - {self.district}"
@@ -98,10 +108,10 @@ class Item(models.Model):
     district = models.ForeignKey(District, on_delete=models.SET_NULL, null=True, blank=True)
     ward = models.ForeignKey(Ward, on_delete=models.SET_NULL, null=True, blank=True)
     place = models.ForeignKey(Place, on_delete=models.SET_NULL, null=True, blank=True)
-    street = models.ForeignKey(Street, on_delete=models.SET_NULL, null=True, blank=True)
+    street = models.CharField(max_length=100, blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.tittle
+        return self.title
 
 

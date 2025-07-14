@@ -1,27 +1,42 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
-    <head>
-        <tittle>Sign Up - Tupie</tittle>
-        <link rel="stylesheet" href="{% static 'tupie_app/style.css' %}">
-    </head>
-    <body>
-            <div class header>
-                <h1>Sign Up to join Tupie</h1>
-            </div>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Sign Up - Tupie</title>
+    <link rel="stylesheet" href="{% static 'tupie_app/style.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+  <div class="container">
+    <a href="{% url 'tupie_app:home' %}" class="logo">Tupie</a>
+    <ul class="nav-links">
+      {% if user.is_authenticated %}
+        <li><a href="{% url 'tupie_app:add_item' %}">Add Item</a></li>
+        <li><a href="{% url 'tupie_app:logout' %}">Logout</a></li>
+      {% else %}
+        <li><a href="{% url 'tupie_app:login' %}">Login</a></li>
+        <li><a href="{% url 'tupie_app:signup' %}">Sign Up</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
 
-            <div class content>
-                {% for message i messages %}
-                    <p class="message">{{ message }}</p>
-                {% endfor %}
+    <div class="header">
+        <h1>Sign Up to join Tupie</h1>
+    </div>
 
-                <form method="post">
-                        {% csrf_token %}
-                        {{ form.as_p }}
-                        <button type="submit">Sign Up</button>
-                </form>
-                <p>Already have an account? <a href="{% url 'tupie_app:login' %}">Log In</a></p>
-            </div>
+    <div class="content">
+        {% for message in messages %}
+            <p class="message">{{ message }}</p>
+        {% endfor %}
 
-    </body>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit">Sign Up</button>
+        </form>
+        <p>Already have an account? <a href="{% url 'tupie_app:login' %}">Log In</a></p>
+    </div>
+</body>
 </html>

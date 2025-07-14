@@ -1,34 +1,49 @@
 {% load static %}
 <!DOCTYPE html>
 <html>
-    <head>
-        <tittle>Log in - Tupie</tittle>
-        <link rel="stylesheet" href="{% static 'tupie_app/style.css' %}">
-    </head>
-    <body>
-            <div class header>
-                <h1>Log In on Tupie</h1>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Log in - Tupie</title>
+    <link rel="stylesheet" href="{% static 'tupie_app/style.css' %}">
+</head>
+<body>
+    <nav class="navbar">
+  <div class="container">
+    <a href="{% url 'tupie_app:home' %}" class="logo">Tupie</a>
+    <ul class="nav-links">
+      {% if user.is_authenticated %}
+        <li><a href="{% url 'tupie_app:add_item' %}">Add Item</a></li>
+        <li><a href="{% url 'tupie_app:logout' %}">Logout</a></li>
+      {% else %}
+        <li><a href="{% url 'tupie_app:login' %}">Login</a></li>
+        <li><a href="{% url 'tupie_app:signup' %}">Sign Up</a></li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>
+
+    <div class="header">
+        <h1>Log In on Tupie</h1>
+    </div>
+
+    <div class="content">
+        {% for message in messages %}
+            <p class="message">{{ message }}</p>
+        {% endfor %}
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                <label>Username:</label>
+                <input type="text" name="username" required autofocus>
             </div>
-
-            <div class content>
-                {% for message i messages %}
-                    <p class="message">{{ message }}</p>
-                {% endfor %}
-
-                <form method="post">
-                        {% csrf_token %}
-                        <div class="form-group">
-                            <label>Username:</label>
-                            <input type="text" name="Username">
-                        </div>
-                        <div class="form-group">
-                            <label>Password:</label>
-                            <input type="password" name="Password">
-                        </div>
-                        <button type="submit">Log In</button>
-                </form>
-                <p>Need an account? <a href="{% url 'tupie_app:signup' %}">Sign Up</a></p>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" name="password" required>
             </div>
-
-    </body>
+            <button type="submit">Log In</button>
+        </form>
+        <p>Need an account? <a href="{% url 'tupie_app:signup' %}">Sign Up</a></p>
+    </div>
+</body>
 </html>
